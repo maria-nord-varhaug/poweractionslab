@@ -7,7 +7,7 @@ jobs:
     steps:
       - name: Install powerplatform package deployment tool
         shell: pwsh
-        run: ./install_pdt.ps1
+        run: ./install_pdt.ps1 -Task ModuleBuild
           
   # Explore-GitHub-Actions:
   #   runs-on: ubuntu-latest
