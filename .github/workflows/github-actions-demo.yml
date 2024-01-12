@@ -5,10 +5,15 @@ jobs:
   Test-Action:
     runs-on: windows-latest
     steps:
-      - name: Build
+      - name: Install powerplatform package deployment tool
         shell: pwsh
         run: |
-          .\install_pdt.ps1
+          Set-PSRepository PSGallery -InstallationPolicy Trusted
+          Install-Module PSScriptAnalyzer -ErrorAction Stop
+      - name: Get list of rules
+        shell: pwsh
+        run: |
+          Get-ScriptAnalyzerRule
           
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
