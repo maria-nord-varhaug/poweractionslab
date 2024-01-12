@@ -1,16 +1,23 @@
 name: GitHub Actions Demo
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on: [push]
+
+    # Test-Action:
+  #   runs-on: windows-latest
+  #   steps:
+  #     - uses: actions/checkout@v1
+  #     - name: Install powerplatform package deployment tool
+  #       run: .\install_pdt.ps1
+  #       shell: powershell
 jobs:
-  Test-Action:
+  Unzip-folder:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Install powerplatform package deployment tool
-        run: .\install_pdt.ps1
+      - name: Unzip folder
+        run: 7z x testfil.zip -o
         shell: powershell
-        
-          
+
   # Explore-GitHub-Actions:
   #   runs-on: ubuntu-latest
   #   steps:
