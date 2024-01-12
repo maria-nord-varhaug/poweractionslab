@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Unzip folder
-        run: 7z x testfil.zip -o
+        run: 7z x testfil.zip -o"D:\a\poweractionslab\poweractionslab\"
         shell: powershell
 
   # Explore-GitHub-Actions:
