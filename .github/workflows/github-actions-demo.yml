@@ -5,9 +5,11 @@ jobs:
   Test-Action:
     runs-on: windows-latest
     steps:
+      - uses: actions/checkout@v1
       - name: Install powerplatform package deployment tool
-        shell: pwsh
-        run: ./install_pdt.ps1 -Task ModuleBuild
+        run: .\install_pdt.ps1
+        shell: powershell
+        
           
   # Explore-GitHub-Actions:
   #   runs-on: ubuntu-latest
