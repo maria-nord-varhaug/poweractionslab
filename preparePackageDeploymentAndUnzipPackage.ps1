@@ -22,7 +22,7 @@ if ($file)
     ./nuget install Microsoft.CrmSdk.XrmTooling.PackageDeployment.WPF -O .\Tools
     mkdir .\Tools\PackageDeployment
     $pdFolder = Get-ChildItem ./Tools | Where-Object {$_.Name -match 'Microsoft.CrmSdk.XrmTooling.PackageDeployment.Wpf.'}
-    Move-Item .\Tools\$pdFolder\tools\*.* .\Tools\PackageDeployment
+    Move-Item .\Tools\$pdFolder.Name\tools\*.* .\Tools\PackageDeployment
     Remove-Item .\Tools\$pdFolder -Force -Recurse
 
     ##

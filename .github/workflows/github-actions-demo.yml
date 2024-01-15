@@ -8,6 +8,8 @@ jobs:
       runs-on: windows-latest
       steps:
       - uses: actions/checkout@v2
+      - run: echo "Current directory ${{ github.workspace }} ."
+
       - name: Install powerplatform package deployment tool and unzip annatas newest package to right folder
         run: |
           & .\preparePackageDeploymentAndUnzipPackage.ps1 -path "${{ github.workspace }}" -environment "weu-dev-develop"
