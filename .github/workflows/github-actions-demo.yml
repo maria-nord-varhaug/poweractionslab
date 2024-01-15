@@ -2,21 +2,23 @@ name: GitHub Actions Demo
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on: [push]
 
-    # Test-Action:
-  #   runs-on: windows-latest
-  #   steps:
-  #     - uses: actions/checkout@v1
-  #     - name: Install powerplatform package deployment tool
-  #       run: .\install_pdt.ps1
-  #       shell: powershell
+  
 jobs:
-  Unzip-folder:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v1
-      - name: Unzip folder
-        run: 7z x testfil.zip -o"D:\a\poweractionslab\poweractionslab\"
-        shell: powershell
+  Test-Action:
+      runs-on: windows-latest
+      steps:
+        - uses: actions/checkout@v1
+        - name: Install powerplatform package deployment tool and unzip annatas newest package to right folder
+        - task: PowerShell@2
+          inputs:
+            targetType: 'filePath'
+            filePath: $(System.DefaultWorkingDirectory)\preparePackageDeploymentAndUnzipPackage.ps1
+            arguments: > # Use this to avoid newline characters in multiline string
+              -path $(System.DefaultWorkingDirectory)
+              -environment "weu-dev-develop"
+          # Writes an error to build summary and to log in red text
+
+      
 
   # Explore-GitHub-Actions:
   #   runs-on: ubuntu-latest
