@@ -7,16 +7,10 @@ jobs:
   Test-Action:
       runs-on: windows-latest
       steps:
-        - uses: actions/checkout@v1
-        - name: Install powerplatform package deployment tool and unzip annatas newest package to right folder
-        - task: PowerShell@2
-          inputs:
-            targetType: 'filePath'
-            filePath: $(System.DefaultWorkingDirectory)\preparePackageDeploymentAndUnzipPackage.ps1
-            arguments: > # Use this to avoid newline characters in multiline string
-              -path $(System.DefaultWorkingDirectory)
-              -environment "weu-dev-develop"
-          # Writes an error to build summary and to log in red text
+      - uses: actions/checkout@v2
+      - name: Install powerplatform package deployment tool and unzip annatas newest package to right folder
+        run: |
+          & .\preparePackageDeploymentAndUnzipPackage.ps1 -path "${{ github.workspace }}" -environment "weu-dev-develop"
 
       
 
