@@ -18,9 +18,8 @@ if ($file)
     & "$workingDir\nuget.exe" install Microsoft.CrmSdk.XrmTooling.PackageDeployment.WPF -O "$tools"
 
     # Remove unnecessary fill, move the necessary package tools to own folder, and remove nuget
-    $pdFolder = Get-ChildItem $tools | Where-Object {$_.Name -match 'Microsoft.CrmSdk.XrmTooling.PackageDeployment.Wpf.'}
-    Move-Item "$tools/$pdFolder/tools/*.*" "$tools/PackageDeployment"
-    Remove-Item "$tools\$pdFolder" -Force -Recurse
+    Move-Item "$tools\Microsoft.CrmSdk.XrmTooling.PackageDeployment.Wpf.*\tools\*.*" "$tools\PackageDeployment"
+    Remove-Item "$tools\Microsoft.CrmSdk.XrmTooling.PackageDeployment.Wpf.*" -Force -Recurse
     Remove-Item "$workingDir\nuget.exe"
 
     # Use Expand-Archive to extract the file
