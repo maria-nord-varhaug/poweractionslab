@@ -1,3 +1,6 @@
+param ($environment)
 Set-ExecutionPolicy -ExecutionPolicy AllSigned
 Install-Module Microsoft.Xrm.Tooling.PackageDeployment.Powershell    
-Get-CrmPackages -PackageDirectory "C:\Users\marino\Documents\github_actions_test\poweractionslab\DealerUI installation v.0.0.28\weu-dev-develop\Tools"
+$versionNumber = [regex]::Match($file.FullName, "[0-9]+\.[0-9]+\.[0-9]+").Value
+$startDir = Get-Location
+Get-CrmPackages -PackageDirectory ""$startDir\DealerUI installation v.$versionNumber\$environment\Tools""
