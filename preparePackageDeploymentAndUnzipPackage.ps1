@@ -19,7 +19,8 @@ if ($file)
     Remove-Item "$tools\Microsoft.CrmSdk.XrmTooling.PackageDeployment.Wpf.*" -Force -Recurse
     Remove-Item "$workingDir\nuget.exe"
     echo "Unzip"
-    7z x "$file" -o"$tools"
+    echo $PSVersionTable.PSVersion
+    Expand-Archive -Path "$startDir\$knownPartOfFileName*.zip" -DestinationPath "$tools"
     echo "Unzipped"
     } else
   {
