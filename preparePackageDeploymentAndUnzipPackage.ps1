@@ -18,10 +18,7 @@ if ($file)
     Move-Item "$tools\Microsoft.CrmSdk.XrmTooling.PackageDeployment.Wpf.*\tools\*.*" "$tools\PackageDeployment"
     Remove-Item "$tools\Microsoft.CrmSdk.XrmTooling.PackageDeployment.Wpf.*" -Force -Recurse
     Remove-Item "$workingDir\nuget.exe"
-    echo "Unzip"
-    echo $PSVersionTable.PSVersion
     Expand-Archive -Path "$startDir\$knownPartOfFileName*.zip" -DestinationPath "$tools"
-    echo "Unzipped"
     } else
   {
     Write-Host "No file found starting with $knownPartOfFileName"
