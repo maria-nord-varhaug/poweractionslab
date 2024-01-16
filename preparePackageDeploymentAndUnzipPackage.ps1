@@ -20,6 +20,7 @@ if ($file)
     Remove-Item "$workingDir\nuget.exe"
 
     Expand-Archive -Path $file.FullName -DestinationPath $tools
+    Exit 0
   } else
   {
     Write-Host "No file found starting with $knownPartOfFileName"
