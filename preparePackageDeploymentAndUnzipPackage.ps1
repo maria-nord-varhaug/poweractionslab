@@ -1,39 +1,30 @@
-param ($path, $environment)
+param ($environment)
 $knownPartOfFileName = "Annata365Dataverse."
 $file = Get-ChildItem -Filter "$knownPartOfFileName*.zip" | Select-Object -First 1
 if ($file)
   {
-    $pattern = "[0-9]+\.[0-9]+\.[0-9]+"
-    $versionNumber = [regex]::Match($file.FullName, $pattern).Value
-    $folderName = "DealerUI installation v." + $versionNumber + "\" + $environment
-    mkdir $folderName
-    Set-Location $folderName
-    $rootDir = Get-Location
-
+    $versionNumber = [regex]::Match($file.FullName, "[0-9]+\.[0-9]+\.[0-9]+").Value
+    $startDir = Get-Location
     $sourceNugetExe = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
-    $targetNugetExe = ".\nuget.exe"
-    Remove-Item .\Tools -Force -Recurse -ErrorAction Ignore
-    Invoke-WebRequest $sourceNugetExe -OutFile $targetNugetExe
-    Set-Alias nuget $targetNugetExe -Scope Global -Verbose
+    $workingDir = "$startDir\DealerUI installation v.$versionNumber\$environment"
 
-    ##
-    ##Download Package Deployer
-    ##
-    ./nuget install Microsoft.CrmSdk.XrmTooling.PackageDeployment.WPF -O .\Tools
-    mkdir .\Tools\PackageDeployment
-    $pdFolder = Get-ChildItem ./Tools | Where-Object {$_.Name -match 'Microsoft.CrmSdk.XrmTooling.PackageDeployment.Wpf.'}
-    Move-Item "$rootDir/Tools/$pdFolder.Name/tools/*.*" "$rootDir\Tools\PackageDeployment"
-    Remove-Item .\Tools\$pdFolder -Force -Recurse
+    # Make necessary folder structure
+    mkdir $workingDir
+    $tools = "$workingDir\Tools"
+    mkdir "$tools\PackageDeployment"
 
-    ##
-    ##Remove NuGet.exe
-    ##
-    Remove-Item nuget.exe
+    # Install nuget and package deployment tool
+    Invoke-WebRequest $sourceNugetExe -OutFile "$workingDir\nuget.exe" -TimeoutSec 10
+    & "$workingDir\nuget.exe" install Microsoft.CrmSdk.XrmTooling.PackageDeployment.WPF -O "$tools"
 
-    $extractionPath = $path + "\" + $foldername +"\Tools"
+    # Remove unnecessary fill, move the necessary package tools to own folder, and remove nuget
+    $pdFolder = Get-ChildItem $tools | Where-Object {$_.Name -match 'Microsoft.CrmSdk.XrmTooling.PackageDeployment.Wpf.'}
+    Move-Item "$tools/$pdFolder/tools/*.*" "$tools/PackageDeployment"
+    Remove-Item "$tools\$pdFolder" -Force -Recurse
+    Remove-Item "$workingDir\nuget.exe"
 
     # Use Expand-Archive to extract the file
-    Expand-Archive -Path $file.FullName -DestinationPath $extractionPath
+    Expand-Archive -Path $file.FullName -DestinationPath $tools
   } else
   {
     Write-Host "No file found starting with $knownPartOfFileName"

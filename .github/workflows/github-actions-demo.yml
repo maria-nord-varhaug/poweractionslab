@@ -12,7 +12,7 @@ jobs:
 
       - name: Install powerplatform package deployment tool and unzip annatas newest package to right folder
         run: |
-          & .\preparePackageDeploymentAndUnzipPackage.ps1 -path "${{ github.workspace }}" -environment "weu-dev-develop"
+          & .\preparePackageDeploymentAndUnzipPackage.ps1 -environment "weu-dev-develop"
 
       
 
