@@ -9,6 +9,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Find version number
+      shell: pwsh
       run: |
           $fileName = "Annata365Dataverse.*.pdpkg.zip"
           $file = Get-ChildItem -Filter "$fileName" | Select-Object -First 1
@@ -20,7 +21,9 @@ jobs:
           else {
             exit 1
           }
-
+    - name: Print the value of ANNATA_DUI_VERSION
+      shell: pwsh
+      run: Write-Output "ANNATA_DUI_VERSION is $env:ANNATA_DUI_VERSION"
     - name: Install powerplatform package deployment tool and unzip annatas newest package to right folder
       run: |
         & .\preparePackageDeploymentAndUnzipPackage.ps1 -environment weu-dev-develop -fileVersion ${{env.ANNATA_DUI_VERSION}}
