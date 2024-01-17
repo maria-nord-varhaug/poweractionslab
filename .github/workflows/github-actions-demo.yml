@@ -15,7 +15,7 @@ jobs:
         run: Install-Module -Name Microsoft.Xrm.Tooling.PackageDeployment.Powershell -Force
       - name: See packages that can be deployed
         run: |
-          $loc = Get-Get-Location
+          $loc = Get-Location
           Get-CrmPackages -PackageDirectory "$loc\DealerUI installation v.0.0.28\weu-dev-develop\Tools"
 
       
