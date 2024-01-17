@@ -15,7 +15,7 @@ jobs:
           if ($file)
           {
             $fileVersion = [regex]::Match($file.FullName, "[0-9]+\.[0-9]+\.[0-9]+").Value
-            "ANNATA_DUI_VERSION=$fileVersion" >> "$GITHUB_ENV"
+            echo "ANNATA_DUI_VERSION=$fileVersion" >> "$GITHUB_ENV"
           }
           else {
             exit 1
