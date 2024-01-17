@@ -1,16 +1,25 @@
 name: GitHub Actions Demo
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+on: [workflow_dispatch ]
+
+  
 jobs:
   Test-Action:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v1
-      - name: Install powerplatform package deployment tool
-        run: .\install_pdt.ps1
-        shell: powershell
-        
-          
+      runs-on: windows-latest
+      steps:
+      - uses: actions/checkout@v2
+      - name: Install powerplatform package deployment tool and unzip annatas newest package to right folder
+        run: |
+          & .\preparePackageDeploymentAndUnzipPackage.ps1 -environment "weu-dev-develop" -fileVersion "0.0.28"
+      - name: Install package deployment module
+        run: Install-Module -Name Microsoft.Xrm.Tooling.PackageDeployment.Powershell -Force
+      - name: See packages that can be deployed
+        run: |
+          $loc = Get-Location
+          Get-CrmPackages -PackageDirectory "$loc\DealerUI installation v.0.0.28\weu-dev-develop\Tools"
+
+      
+
   # Explore-GitHub-Actions:
   #   runs-on: ubuntu-latest
   #   steps:
