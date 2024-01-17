@@ -1,5 +1,5 @@
 param ($environment, $fileVersion)
-$fileName = "Annata365Dataverse.$fileVersion.zip"
+$fileName = "Annata365Dataverse.$fileVersion.pdpkg.zip"
 $file = Get-ChildItem -Filter "$fileName" | Select-Object -First 1
 if ($file)
   {
