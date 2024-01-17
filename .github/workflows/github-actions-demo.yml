@@ -11,8 +11,10 @@ jobs:
       - name: Install powerplatform package deployment tool and unzip annatas newest package to right folder
         run: |
           & .\preparePackageDeploymentAndUnzipPackage.ps1 -environment "weu-dev-develop" -fileVersion "0.0.28"
-      - name: LKJ
-        run: .\deployPackage.ps1 -environment "weu-dev-develop" -fileVersion "0.0.28"
+      - name: Install necessary module
+        run: Install-Module -Name Microsoft.Xrm.Tooling.PackageDeployment.Powershell -Force
+      - name: See packages
+        run: Get-CrmPackages -PackageDirectory .\DealerUI installation v.0.0.28\weu-dev-develop\Tools"
 
       
 
