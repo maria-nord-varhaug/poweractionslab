@@ -1,24 +1,19 @@
 param ($environment, $fileVersion)
 $fileName = "Annata365Dataverse.$fileVersion.pdpkg.zip"
-$file = Get-ChildItem -Filter "$fileName" | Select-Object -First 1
-if ($file)
-  {
-    $startDir = Get-Location
-    $sourceNugetExe = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
-    $workingDir = "$startDir\DealerUI installation v.$fileVersion\$environment"
 
-    mkdir $workingDir
-    $tools = "$workingDir\Tools"
-    mkdir "$tools\PackageDeployment"
+$startDir = Get-Location
+$sourceNugetExe = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
+$workingDir = "$startDir\DealerUI installation v.$fileVersion\$environment"
 
-    Invoke-WebRequest $sourceNugetExe -OutFile "$workingDir\nuget.exe" -TimeoutSec 10
-    & "$workingDir\nuget.exe" install Microsoft.CrmSdk.XrmTooling.PackageDeployment.WPF -O "$tools"
+mkdir $workingDir
+$tools = "$workingDir\Tools"
+mkdir "$tools\PackageDeployment"
 
-    Move-Item "$tools\Microsoft.CrmSdk.XrmTooling.PackageDeployment.Wpf.*\tools\*.*" "$tools\PackageDeployment"
-    Remove-Item "$tools\Microsoft.CrmSdk.XrmTooling.PackageDeployment.Wpf.*" -Force -Recurse
-    Remove-Item "$workingDir\nuget.exe"
-    Expand-Archive -Path "$startDir\$fileName" -DestinationPath "$tools"
-    } else
-  {
-    Write-Host "No file found called $fileName"
-  }
+Invoke-WebRequest $sourceNugetExe -OutFile "$workingDir\nuget.exe" -TimeoutSec 10
+& "$workingDir\nuget.exe" install Microsoft.CrmSdk.XrmTooling.PackageDeployment.WPF -O "$tools"
+
+Move-Item "$tools\Microsoft.CrmSdk.XrmTooling.PackageDeployment.Wpf.*\tools\*.*" "$tools\PackageDeployment"
+Remove-Item "$tools\Microsoft.CrmSdk.XrmTooling.PackageDeployment.Wpf.*" -Force -Recurse
+Remove-Item "$workingDir\nuget.exe"
+Expand-Archive -Path "$startDir\$fileName" -DestinationPath "$tools"
+    
