@@ -4,12 +4,12 @@ on: [workflow_dispatch ]
 
   
 jobs:
-  Test-Action:
-      runs-on: windows-latest
-      steps:
-      - uses: actions/checkout@v2
-      - name: Find version number
-        run: |
+  Deploy-Dev:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Find version number
+      run: |
           $fileName = "Annata365Dataverse.*.pdpkg.zip"
           $file = Get-ChildItem -Filter "$fileName" | Select-Object -First 1
           if ($file)
@@ -21,13 +21,13 @@ jobs:
             exit 1
           }
 
-      - name: Install powerplatform package deployment tool and unzip annatas newest package to right folder
-        run: |
-          & .\preparePackageDeploymentAndUnzipPackage.ps1 -environment ${{ vars.ENVIRONMENT }} -fileVersion ${{env.ANNATA_DUI_VERSION}}
-      - name: Install package deployment module
-        run: Install-Module -Name Microsoft.Xrm.Tooling.PackageDeployment.Powershell -Force
-      - name: See packages that can be deployed
-        run: |
-          $loc = Get-Location
-          Get-CrmPackages -PackageDirectory "$loc\DealerUI installation v.${{env.ANNATA_DUI_VERSION}}\${{ vars.ENVIRONMENT }}\Tools"
+    - name: Install powerplatform package deployment tool and unzip annatas newest package to right folder
+      run: |
+        & .\preparePackageDeploymentAndUnzipPackage.ps1 -environment weu-dev-develop -fileVersion ${{env.ANNATA_DUI_VERSION}}
+    - name: Install package deployment module
+      run: Install-Module -Name Microsoft.Xrm.Tooling.PackageDeployment.Powershell -Force
+    - name: See packages that can be deployed
+      run: |
+        $loc = Get-Location
+        Get-CrmPackages -PackageDirectory "$loc\DealerUI installation v.${{env.ANNATA_DUI_VERSION}}\weu-dev-develop\Tools"
 
