@@ -1,12 +1,10 @@
-param ($environment)
-$knownPartOfFileName = "Annata365Dataverse."
-$file = Get-ChildItem -Filter "$knownPartOfFileName*.zip" | Select-Object -First 1
+param ($environment, $fileVersion)
+$file = Get-ChildItem -Filter "Annata365Dataverse.*.zip" | Select-Object -First 1
 if ($file)
   {
-    $versionNumber = [regex]::Match($file.FullName, "[0-9]+\.[0-9]+\.[0-9]+").Value
     $startDir = Get-Location
     $sourceNugetExe = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
-    $workingDir = "$startDir\DealerUI installation v.$versionNumber\$environment"
+    $workingDir = "$startDir\DealerUI installation v.$fileVersion\$environment"
 
     mkdir $workingDir
     $tools = "$workingDir\Tools"
