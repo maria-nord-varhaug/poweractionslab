@@ -1,13 +1,17 @@
 name: GitHub Actions Demo
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [workflow_dispatch ]
+on: 
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
   
 jobs:
   Deploy-Dev:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Install powerplatform package deployment tool and unzip annatas newest package to right folder
       run: |
         & .\preparePackageDeploymentAndUnzipPackage.ps1 -environment weu-dev-develop 
@@ -15,5 +19,14 @@ jobs:
       run: Install-Module -Name Microsoft.Xrm.Tooling.PackageDeployment.Powershell -Force
     - name: See packages that can be deployed
       run: .\deployPackage.ps1 -environment weu-dev-develop 
+    - name: Connect to power platform
+      run: |
+        $cred = New-Object System.Management.Automation.PSCredential (${{vars.DATAVERSE_USERNAME }}, (ConvertTo-SecureString ${{secrets.DATAVERSE_PASSWORD}} -ASPlainText -Force))
+        $conn = Get-CrmConnection -Credential $cred -ServerUrl "operations-weu-dev-develop.crm4.dynamics.com"
+        if($conn.IsReady) {
+          Write-Output "Connected successfully to Dataverse"
+        } else {
+          Write-Output "Failed to connect to Dataverse"
+        }
 
 
