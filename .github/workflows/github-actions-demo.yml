@@ -15,12 +15,13 @@ jobs:
     - name: Install powerplatform package deployment tool and unzip annatas newest package to right folder
       run: |
         & .\preparePackageDeploymentAndUnzipPackage.ps1 -environment weu-dev-develop 
-    - name: Install package deployment module
-      run: Install-Module -Name Microsoft.Xrm.Tooling.PackageDeployment.Powershell -Force
-    - name: See packages that can be deployed
-      run: .\deployPackage.ps1 -environment weu-dev-develop 
+    # - name: Install package deployment module
+    #   run: 
+    # - name: See packages that can be deployed
+    #   run: .\deployPackage.ps1 -environment weu-dev-develop 
     - name: Connect to power platform
       run: |
+        Install-Module -Name Microsoft.Xrm.Tooling.PackageDeployment.Powershell -Force
         $cred = New-Object System.Management.Automation.PSCredential ("${{vars.DATAVERSE_USERNAME }}", (ConvertTo-SecureString "${{secrets.DATAVERSE_PASSWORD}}" -ASPlainText -Force))
         $conn = Get-CrmConnection -Credential $cred -ServerUrl "operations-weu-dev-develop.crm4.dynamics.com"
         if($conn.IsReady) {
