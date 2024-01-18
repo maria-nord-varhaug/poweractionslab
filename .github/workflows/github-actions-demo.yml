@@ -12,10 +12,6 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Setup PowerShell
-      uses: actions/setup-powershell@v1
-      with:
-        version: 5.1.x
     - name: Install powerplatform package deployment tool and unzip annatas newest package to right folder
       run: |
         & .\preparePackageDeploymentAndUnzipPackage.ps1 -environment weu-dev-develop 
@@ -38,5 +34,7 @@ jobs:
         } else {
           Write-Output "Failed to connect to Dataverse"
         }
+      shell: windows-2019
+
 
 
