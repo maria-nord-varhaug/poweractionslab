@@ -12,6 +12,10 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v4
+    - name: Setup PowerShell
+      uses: actions/setup-powershell@v1
+      with:
+        version: 5.1.x
     - name: Install powerplatform package deployment tool and unzip annatas newest package to right folder
       run: |
         & .\preparePackageDeploymentAndUnzipPackage.ps1 -environment weu-dev-develop 
@@ -19,10 +23,11 @@ jobs:
     #   run: 
     # - name: See packages that can be deployed
     #   run: .\deployPackage.ps1 -environment weu-dev-develop 
+    - name: Install CRM Connector
+      run: Install-Module -Name Microsoft.Xrm.Tooling.CrmConnector.PowerShell -Force -AllowClobber
     - name: Connect to power platform
       run: |
-        Install-Module -Name Microsoft.Xrm.Tooling.PackageDeployment.Powershell -Force -Verbose
-        Import-Module -Name Microsoft.Xrm.Tooling.PackageDeployment.Powershell -Verbose
+        Import-Module Microsoft.Xrm.Tooling.CrmConnector.PowerShell
         Get-Command -Module Microsoft.Xrm.Tooling.PackageDeployment.Powershell
         $PSVersionTable.PSVersion
         echo $env:PSModulePath
