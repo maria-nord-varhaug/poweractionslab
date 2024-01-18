@@ -8,29 +8,12 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Find version number
-      shell: pwsh
-      run: |
-          $fileName = "Annata365Dataverse.*.pdpkg.zip"
-          $file = Get-ChildItem -Filter "$fileName" | Select-Object -First 1
-          if ($file)
-          {
-            $fileVersion = [regex]::Match($file.FullName, "[0-9]+\.[0-9]+\.[0-9]+").Value
-            Add-Content -Path $env:GITHUB_ENV -Value "\nANNATA_DUI_VERSION=$fileVersion"
-          }
-          else {
-            exit 1
-          }
-    - name: Print the value of ANNATA_DUI_VERSION
-      shell: pwsh
-      run: Write-Output "ANNATA_DUI_VERSION is $env:ANNATA_DUI_VERSION"
     - name: Install powerplatform package deployment tool and unzip annatas newest package to right folder
       run: |
-        & .\preparePackageDeploymentAndUnzipPackage.ps1 -environment weu-dev-develop -fileVersion ${{env.ANNATA_DUI_VERSION}}
+        & .\preparePackageDeploymentAndUnzipPackage.ps1 -environment weu-dev-develop 
     - name: Install package deployment module
       run: Install-Module -Name Microsoft.Xrm.Tooling.PackageDeployment.Powershell -Force
     - name: See packages that can be deployed
-      run: |
-        $loc = Get-Location
-        Get-CrmPackages -PackageDirectory "$loc\DealerUI installation v.${{env.ANNATA_DUI_VERSION}}\weu-dev-develop\Tools"
+      run: .\deployPackage.ps1 -environment weu-dev-develop 
+
 
