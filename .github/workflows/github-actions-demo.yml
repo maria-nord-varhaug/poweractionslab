@@ -21,7 +21,11 @@ jobs:
     #   run: .\deployPackage.ps1 -environment weu-dev-develop 
     - name: Connect to power platform
       run: |
-        Install-Module -Name Microsoft.Xrm.Tooling.PackageDeployment.Powershell -Force
+        Install-Module -Name Microsoft.Xrm.Tooling.PackageDeployment.Powershell -Force -Verbose
+        Import-Module -Name Microsoft.Xrm.Tooling.PackageDeployment.Powershell -Verbose
+        Get-Command -Module Microsoft.Xrm.Tooling.PackageDeployment.Powershell
+        $PSVersionTable.PSVersion
+        echo $env:PSModulePath
         $cred = New-Object System.Management.Automation.PSCredential ("${{vars.DATAVERSE_USERNAME }}", (ConvertTo-SecureString "${{secrets.DATAVERSE_PASSWORD}}" -ASPlainText -Force))
         $conn = Get-CrmConnection -Credential $cred -ServerUrl "operations-weu-dev-develop.crm4.dynamics.com"
         if($conn.IsReady) {
