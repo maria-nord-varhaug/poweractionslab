@@ -15,7 +15,7 @@ if ($file)
   
   Move-Item "$workingDir\Tools\Microsoft.CrmSdk.XrmTooling.PackageDeployment.Wpf.*\tools\*.*" "$workingDir\Tools\PackageDeployment"
   Remove-Item "$workingDir\Tools\Microsoft.CrmSdk.XrmTooling.PackageDeployment.Wpf.*" -Force -Recurse
-  Expand-Archive -Path "$startDir\$file.FullName" -DestinationPath "$workingDir\Tools"
+  Expand-Archive -Path "$file" -DestinationPath "$workingDir\Tools"
 }
 else {
   exit 1
