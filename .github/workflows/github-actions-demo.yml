@@ -39,6 +39,9 @@ jobs:
           Write-Output "Failed to connect to Dataverse"
         }
       shell: windows-2019
-
+    - name: Remove nuget
+      run: |
+        $dir = Get-Location
+        Remove-Item "$dir\nuget.exe"
 
 
