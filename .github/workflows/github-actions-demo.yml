@@ -11,12 +11,12 @@ jobs:
   Deploy-Dev:
     runs-on: windows-latest
     steps:
+    - uses: actions/checkout@v4
     - name: Install nuget
       run: |
         $dir = Get-Location
-        Invoke-WebRequest "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe" -OutFile "$dir\nuget.exe" -TimeoutSec 10 
+        Invoke-WebRequest "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe" -OutFile "$dir\nuget.exe" -TimeoutSec 10  -Verbose
 
-    - uses: actions/checkout@v4
     - name: Install powerplatform package deployment tool and unzip annatas newest package to right folder
       run: |
         & .\preparePackageDeploymentAndUnzipPackage.ps1 -environment weu-dev-develop 
