@@ -11,6 +11,9 @@ jobs:
   Deploy-Dev:
     runs-on: windows-latest
     steps:
+    - name: Install nuget
+      run: Invoke-WebRequest "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe" -OutFile "\nuget.exe" -TimeoutSec 10 
+
     - uses: actions/checkout@v4
     - name: Install powerplatform package deployment tool and unzip annatas newest package to right folder
       run: |
@@ -20,11 +23,10 @@ jobs:
     # - name: See packages that can be deployed
     #   run: .\deployPackage.ps1 -environment weu-dev-develop 
     - name: Install CRM Connector
-      run: Install-Module -Name Microsoft.Xrm.Tooling.CrmConnector.PowerShell -Force -AllowClobber
+      run: Install-Module -Name Microsoft.Xrm.Tooling.CrmConnector.PowerShell -RequiredVersion 3.3.0.964 -Force
     - name: Connect to power platform
       run: |
         Import-Module Microsoft.Xrm.Tooling.CrmConnector.PowerShell
-        Get-Command -Module Microsoft.Xrm.Tooling.PackageDeployment.Powershell
         $PSVersionTable.PSVersion
         echo $env:PSModulePath
         $cred = New-Object System.Management.Automation.PSCredential ("${{vars.DATAVERSE_USERNAME }}", (ConvertTo-SecureString "${{secrets.DATAVERSE_PASSWORD}}" -ASPlainText -Force))
