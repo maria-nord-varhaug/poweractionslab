@@ -11,7 +11,7 @@ if ($file)
   mkdir $workingDir
   mkdir "$workingDir\Tools\PackageDeployment"
   
-  & ".\nuget.exe" install Microsoft.CrmSdk.XrmTooling.PackageDeployment.WPF -O "$workingDir\Tools"
+  & "$startDir\nuget.exe" install Microsoft.CrmSdk.XrmTooling.PackageDeployment.WPF -O "$workingDir\Tools"
   
   Move-Item "$workingDir\Tools\Microsoft.CrmSdk.XrmTooling.PackageDeployment.Wpf.*\tools\*.*" "$workingDir\Tools\PackageDeployment"
   Remove-Item "$workingDir\Tools\Microsoft.CrmSdk.XrmTooling.PackageDeployment.Wpf.*" -Force -Recurse
