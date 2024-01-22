@@ -28,16 +28,7 @@ jobs:
       run: Install-Module -Name Microsoft.Xrm.Tooling.CrmConnector.PowerShell -RequiredVersion 3.3.0.964 -Force
     - name: Connect to power platform
       run: |
-        Import-Module Microsoft.Xrm.Tooling.CrmConnector.PowerShell
-        $PSVersionTable.PSVersion
-        echo $env:PSModulePath
-        $cred = New-Object System.Management.Automation.PSCredential ("${{vars.DATAVERSE_USERNAME }}", (ConvertTo-SecureString "${{secrets.DATAVERSE_PASSWORD}}" -ASPlainText -Force))
-        $conn = Get-CrmConnection -Credential $cred -ServerUrl "operations-weu-dev-develop.crm4.dynamics.com"
-        if($conn.IsReady) {
-          Write-Output "Connected successfully to Dataverse"
-        } else {
-          Write-Output "Failed to connect to Dataverse"
-        }
+        & .\deployPackage.ps1 -username "${{vars.DATAVERSE_USERNAME }}" -password (ConvertTo-SecureString "${{secrets.DATAVERSE_PASSWORD}}" -ASPlainText -Force)
     - name: Remove nuget
       run: |
         $dir = Get-Location
