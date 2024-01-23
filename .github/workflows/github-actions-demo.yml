@@ -9,17 +9,17 @@ on:
   
 jobs:
   Deploy-Dev:
+    defaults:
+      run:
+        shell: PowerShell # VERY important, this code does not work in powershell core
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v4
     - name: Install nuget
-      shell: PowerShell
       run: |
-        $dir = Get-Location
-        Invoke-WebRequest "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe" -OutFile "$dir\nuget.exe" -TimeoutSec 10  -Verbose
+        Invoke-WebRequest "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe" -OutFile "(Get-Location)\nuget.exe" -TimeoutSec 10  -Verbose
 
     - name: Install powerplatform package deployment tool and unzip annatas newest package to right folder
-      shell: PowerShell
       run: |
         & .\preparePackageDeploymentAndUnzipPackage.ps1 -environment weu-dev-develop 
     # - name: Install package deployment module
@@ -27,16 +27,21 @@ jobs:
     # - name: See packages that can be deployed
     #   run: .\deployPackage.ps1 -environment weu-dev-develop 
     - name: Install CRM Connector
-      shell: PowerShell
       run: Install-Module -Name Microsoft.Xrm.Tooling.CrmConnector.PowerShell -RequiredVersion 3.3.0.964 -Force
     - name: Connect to power platform
-      shell: PowerShell
       run: |
-        & .\deployPackage.ps1 -username "${{vars.DATAVERSE_USERNAME }}" -password (ConvertTo-SecureString "${{secrets.DATAVERSE_PASSWORD}}" -ASPlainText -Force)
+        Import-Module Microsoft.Xrm.Tooling.CrmConnector.PowerShell
+        $password = ConvertTo-SecureString "${{secrets.DATAVERSE_PASSWORD}}" -ASPlainText -Force
+        $cred = New-Object System.Management.Automation.PSCredential ("${{vars.DATAVERSE_USERNAME }}", $password)
+        $conn = Get-CrmConnection -OrganizationName ${{secrets.ORG_NAME}} -ServerUrl ${{vars.SERVER_URL}} -Credential $cred 
+        if($conn.IsReady) {
+          Write-Output "Connected successfully to Dataverse"
+        } else {
+          Write-Output "Failed to connect to Dataverse"
+          Exit 1
+        }
     - name: Remove nuget
-      shell: PowerShell
       run: |
-        $dir = Get-Location
-        Remove-Item "$dir\nuget.exe"
+        Remove-Item "$(Get-Location)\nuget.exe"
 
 
