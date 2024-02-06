@@ -6,42 +6,38 @@ on:
       - main
   workflow_dispatch:
 
-  
-jobs:
+env:
+  DV_TENANT_ID = '${{secrets.DV_TENANT_ID}}'
+  DV_SP_APP_ID = '${{secrets.DV_CLIENT_ID}}'
+  DV_SP_APP_SECRET = '${{secrets.DV_CLIENT_SECRET}}'
+  ENVIRONMENT_URL = '${{vars.SERVER_URL}}'
+jobs: 
   Deploy-Dev:
-    defaults:
-      run:
-        shell: PowerShell # VERY important, this code does not work in powershell core
+    # defaults:
+    #   run:
+    #     shell: PowerShell # VERY important, this code does not work in powershell core
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Install nuget
-      run: |
-        Invoke-WebRequest "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe" -OutFile "(Get-Location)\nuget.exe" -TimeoutSec 10  -Verbose
+    - name: Install Power Platform Tools
+      uses: microsoft/powerplatform-actions/actions-install@v1
+ 
+    - name: Who am I?
+      uses: microsoft/powerplatform-actions/WhoAmI@v1
+      with:
+        environment-url: ${{env.ENVIRONMENT_URL}}
+        app-id: ${{ env.DV_SP_APP_ID }}
+        client-secret: ${{ env.DV_SP_APP_SECRET }}
+        tenant-id: ${{ env.DV_TENANT_ID }}
 
-    - name: Install powerplatform package deployment tool and unzip annatas newest package to right folder
-      run: |
-        & .\preparePackageDeploymentAndUnzipPackage.ps1 -environment weu-dev-develop 
-    # - name: Install package deployment module
-    #   run: 
-    # - name: See packages that can be deployed
-    #   run: .\deployPackage.ps1 -environment weu-dev-develop 
-    - name: Install CRM Connector
-      run: Install-Module -Name Microsoft.Xrm.Tooling.CrmConnector.PowerShell -RequiredVersion 3.3.0.964 -Force
-    - name: Connect to power platform
-      run: |
-        Import-Module Microsoft.Xrm.Tooling.CrmConnector.PowerShell
-        $password = ConvertTo-SecureString "${{secrets.DATAVERSE_PASSWORD}}" -ASPlainText -Force
-        $cred = New-Object System.Management.Automation.PSCredential ("${{vars.DATAVERSE_USERNAME }}", $password)
-        $conn = Get-CrmConnection -OrganizationName ${{secrets.ORG_NAME}} -ServerUrl ${{vars.SERVER_URL}} -Credential $cred 
-        if($conn.IsReady) {
-          Write-Output "Connected successfully to Dataverse"
-        } else {
-          Write-Output "Failed to connect to Dataverse"
-          Exit 1
-        }
-    - name: Remove nuget
-      run: |
-        Remove-Item "$(Get-Location)\nuget.exe"
+    # - name: Install solution into target environment
+    #   uses: microsoft/powerplatform-actions/import-solution@v1
+    #   with: 
+    #     environment-url: sdsd
+    #     solution-file:
+    #     app-id: ${{ env.DV_CLIENT_ID }}
+    #     client-secret: ${{ env.DV_CLIENT_SECRET }}
+    #     tenant-id: ${{ env.DV_TENANT_ID }}
+   
 
 
