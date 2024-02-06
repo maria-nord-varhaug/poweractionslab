@@ -6,11 +6,6 @@ on:
       - main
   workflow_dispatch:
 
-env:
-  DV_TENANT_ID = '${{secrets.DV_TENANT_ID}}'
-  DV_SP_APP_ID = '${{secrets.DV_CLIENT_ID}}'
-  DV_SP_APP_SECRET = '${{secrets.DV_CLIENT_SECRET}}'
-  ENVIRONMENT_URL = '${{vars.SERVER_URL}}'
 jobs: 
   Deploy-Dev:
     # defaults:
@@ -25,10 +20,10 @@ jobs:
     - name: Who am I?
       uses: microsoft/powerplatform-actions/WhoAmI@v1
       with:
-        environment-url: ${{env.ENVIRONMENT_URL}}
-        app-id: ${{ env.DV_SP_APP_ID }}
-        client-secret: ${{ env.DV_SP_APP_SECRET }}
-        tenant-id: ${{ env.DV_TENANT_ID }}
+        environment-url: ${{vars.SERVER_URL}}
+        app-id: ${{secrets.DV_CLIENT_ID}}
+        client-secret: ${{secrets.DV_CLIENT_SECRET}}
+        tenant-id: ${{ secrets.DV_TENANT_ID }}
 
     # - name: Install solution into target environment
     #   uses: microsoft/powerplatform-actions/import-solution@v1
