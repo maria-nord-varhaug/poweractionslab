@@ -1,12 +1,14 @@
-param([SecureString] $cred)
-Import-Module Microsoft.Xrm.Tooling.CrmConnector.PowerShell
-$PSVersionTable.PSVersion
-Write-Output $PSVersionTable
-Write-Output (Get-InstalledModule)
-$cred = New-Object System.Management.Automation.PSCredential ("$username", $password)
-$conn = Get-CrmConnection -Credential $cred -ServerUrl "operations-weu-dev-develop.crm4.dynamics.com"
-if($conn.IsReady) {
+param($url, $clientId, $clientSecret, $redirect, $environment, $version)
+
+Import-Module Microsoft.Xrm.Tooling.CrmConnector.PowerShell     
+$connectionString = "AuthType=ClientSecret;Url=$url;ClientId=$clientId;ClientSecret=$clientSecret;RedirectUri=$redirect"      
+$crmConn = Get-CrmConnection -ConnectionString $connectionString     
+if($crmConn.IsReady) {
   Write-Output "Connected successfully to Dataverse"
+
+  $startDir = Get-Location
+  # Import-CrmPackage -CrmConnection $CRMConn -PackageDirectory "$startDir\DealerUI installation v.$version\$environment\Tools" -PackageName Annata365Package.dll -UnpackFilesDirectory c:\UnpackedFiles -Verbose
 } else {
   Write-Output "Failed to connect to Dataverse"
+  Exit 1
 }

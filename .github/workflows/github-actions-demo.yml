@@ -36,18 +36,11 @@ jobs:
     - name: Install CRM Connector
       run: Install-Module -Name Microsoft.Xrm.Tooling.CrmConnector.PowerShell -RequiredVersion 3.3.0.964 -Force
 
+      # redirect isn't really an important value, this is a placehodler:
     - name: Connect to power platform
       run: |
-        Import-Module Microsoft.Xrm.Tooling.CrmConnector.PowerShell
-        $connectionString = "AuthType=ClientSecret;Url=${{vars.SERVER_URL}};ClientId=${{secrets.DV_CLIENT_ID}};ClientSecret=${{secrets.DV_CLIENT_SECRET}};RedirectUri=app://58145B91-0C36-4500-8554-080854F2AC97"
-        $crmConn = Get-CrmConnection -ConnectionString $connectionString 
-        
-        if($crmConn.IsReady) {
-          Write-Output "Connected successfully to Dataverse"
-        } else {
-          Write-Output "Failed to connect to Dataverse"
-          Exit 1
-        }
+        $ .\deployPackage.ps1 -url ${{vars.SERVER_URL}} -clientId ${{secrets.DV_CLIENT_ID}} -clientSecret ${{secrets.DV_CLIENT_SECRET}} -redirect "app://58145B91-0C36-4500-8554-080854F2AC97" -environment weu-dev-develop -version ${{ github.event.inputs.version }}
+
     - name: Remove nuget
       run: |
         Remove-Item "$(Get-Location)\nuget.exe"
