@@ -1,12 +1,12 @@
-param ($environment)
+param ($environment, $version)
 
-$fileName = "Annata365Dataverse.*.pdpkg.zip"
+$fileName = "Annata365Dataverse.$version.pdpkg.zip"
 $file = Get-ChildItem -Filter "$fileName" | Select-Object -First 1
 if ($file)
 {
-  $fileVersion = [regex]::Match($file.FullName, "[0-9]+\.[0-9]+\.[0-9]+").Value
+  # $fileVersion = [regex]::Match($file.FullName, "[0-9]+\.[0-9]+\.[0-9]+").Value
   $startDir = Get-Location
-  $workingDir = "$startDir\DealerUI installation v.$fileVersion\$environment"
+  $workingDir = "$startDir\DealerUI installation v.$version\$environment"
   
   mkdir $workingDir
   mkdir "$workingDir\Tools\PackageDeployment"

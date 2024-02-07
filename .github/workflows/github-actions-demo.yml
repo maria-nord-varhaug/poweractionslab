@@ -1,10 +1,14 @@
 name: GitHub Actions Demo
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on: 
-  push:
-    branches:
-      - main
   workflow_dispatch:
+    inputs:
+      version: 
+        description: 'The dealer UI version to deploy, in format vX.X.X, e.g. v0.1.2'
+        required: true
+      environment: 
+        description: 'The environment to deploy to, e.g. weu-dev-develop'
+        required: true
 
   
 jobs:
@@ -14,6 +18,12 @@ jobs:
         shell: PowerShell # VERY important, this code does not work in powershell core
     runs-on: windows-latest
     steps:
+    - name: Check input # kinda unnecessary but whatever
+      run: |
+        if( ${{github.event.inputs.environment}} != weu-dev-develop){
+          exit 1
+        }
+
     - uses: actions/checkout@v4
     - name: Install nuget
       run: |
@@ -21,20 +31,18 @@ jobs:
 
     - name: Install powerplatform package deployment tool and unzip annatas newest package to right folder
       run: |
-        & .\preparePackageDeploymentAndUnzipPackage.ps1 -environment weu-dev-develop 
-    # - name: Install package deployment module
-    #   run: 
-    # - name: See packages that can be deployed
-    #   run: .\deployPackage.ps1 -environment weu-dev-develop 
+        & .\preparePackageDeploymentAndUnzipPackage.ps1 -environment weu-dev-develop -version ${{ github.event.inputs.version }}
+
     - name: Install CRM Connector
       run: Install-Module -Name Microsoft.Xrm.Tooling.CrmConnector.PowerShell -RequiredVersion 3.3.0.964 -Force
+
     - name: Connect to power platform
       run: |
         Import-Module Microsoft.Xrm.Tooling.CrmConnector.PowerShell
-        $password = ConvertTo-SecureString "${{secrets.DATAVERSE_PASSWORD}}" -ASPlainText -Force
-        $cred = New-Object System.Management.Automation.PSCredential ("${{vars.DATAVERSE_USERNAME }}", $password)
-        $conn = Get-CrmConnection -OrganizationName ${{secrets.ORG_NAME}} -ServerUrl ${{vars.SERVER_URL}} -Credential $cred 
-        if($conn.IsReady) {
+        $connectionString = "AuthType=ClientSecret;Url=${{vars.SERVER_URL}};ClientId=${{secrets.DV_CLIENT_ID}};ClientSecret=${{secrets.DV_CLIENT_SECRET}};RedirectUri=app://58145B91-0C36-4500-8554-080854F2AC97"
+        $crmConn = Get-CrmConnection -ConnectionString $connectionString 
+        
+        if($crmConn.IsReady) {
           Write-Output "Connected successfully to Dataverse"
         } else {
           Write-Output "Failed to connect to Dataverse"
@@ -43,5 +51,3 @@ jobs:
     - name: Remove nuget
       run: |
         Remove-Item "$(Get-Location)\nuget.exe"
-
-
