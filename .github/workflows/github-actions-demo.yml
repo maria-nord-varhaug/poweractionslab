@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version: 
-        description: 'The dealer UI version to deploy, in format vX.X.X, e.g. v0.1.2'
+        description: 'The dealer UI version to deploy, in format X.X.X, e.g. 0.1.2'
         required: true
       environment: 
         description: 'The environment to deploy to, e.g. weu-dev-develop'
