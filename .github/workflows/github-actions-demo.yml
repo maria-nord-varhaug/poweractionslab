@@ -1,29 +1,33 @@
-name: GitHub Actions Demo
+name: Deploy to powerplatform
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on: 
-  push:
-    branches:
-      - main
   workflow_dispatch:
+    inputs:
+      version: 
+        description: 'The dealer UI version to deploy, in format X.X.X, e.g. 0.1.2'
+        required: true
+      environment: 
+        description: 'The environment to deploy to, e.g. weu-dev-develop'
+        required: true
 
 jobs: 
   Deploy-Dev:
-    # defaults:
-    #   run:
-    #     shell: PowerShell # VERY important, this code does not work in powershell core
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Install Power Platform Tools
-      uses: microsoft/powerplatform-actions/actions-install@v1
- 
-    - name: Who am I?
-      uses: microsoft/powerplatform-actions/who-am-i@v1
+
+    - name: Setup .NET Core SDK
+      uses: actions/setup-dotnet@v1
       with:
-        environment-url: ${{vars.SERVER_URL}}
-        app-id: ${{secrets.DV_CLIENT_ID}}
-        client-secret: ${{secrets.DV_CLIENT_SECRET}}
-        tenant-id: ${{ secrets.DV_TENANT_ID }}
+        dotnet-version: '3.1.x' # SDK version to use; this version is sufficient for most scenari
+
+    - name: Install Power Platform CLI
+      uses: microsoft/powerplatform-actions/cli@v1
+ 
+    - name: Authenticate
+      run: |
+        pac auth create --url ${{vars.SERVER_URL}} --applicationId ${{secrets.DV_CLIENT_ID}} --clientSecret ${{secrets.DV_CLIENT_SECRET}} --tenant ${{ secrets.DV_TENANT_ID }}
+
 
     # - name: Install solution into target environment
     #   uses: microsoft/powerplatform-actions/import-solution@v1
