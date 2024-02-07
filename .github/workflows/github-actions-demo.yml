@@ -22,8 +22,11 @@ jobs:
         dotnet-version: '3.1.x' # SDK version to use; this version is sufficient for most scenari
 
     - name: Install Power Platform CLI
-      uses: microsoft/powerplatform-actions/cli@v1
- 
+      run: |
+        wget https://download.microsoft.com/download/0/2/e/02e7e5e7-ae8d-4553-9b16-4cb9b7e6f2fb/powerplatform-cli-1.9.6-x64.msi
+        sudo apt install -y ./powerplatform-cli-1.9.6-x64.msi
+      shell: bash
+      
     - name: Authenticate
       run: |
         pac auth create --url ${{vars.SERVER_URL}} --applicationId ${{secrets.DV_CLIENT_ID}} --clientSecret ${{secrets.DV_CLIENT_SECRET}} --tenant ${{ secrets.DV_TENANT_ID }}
