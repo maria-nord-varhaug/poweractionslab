@@ -1,5 +1,5 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+name: Deploy annata DUI package to dataverse
+
 on: 
   workflow_dispatch:
     inputs:
@@ -12,20 +12,17 @@ on:
 
   
 jobs:
-  Deploy-Dev:
+  deploy:
     defaults:
       run:
         shell: PowerShell # VERY important, this code does not work in powershell core
     runs-on: windows-latest
-    steps:
-    - name: Check input # kinda unnecessary but whatever
-      run: |
-        if( ${{github.event.inputs.environment}} != weu-dev-develop){
-          exit 1
-        }
 
-    - uses: actions/checkout@v4
-    - name: Install nuget
+    steps:
+    - name: Checkout repository 
+      uses: actions/checkout@v4
+
+    - name: Install nuget to runner
       run: |
         Invoke-WebRequest "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe" -OutFile "(Get-Location)\nuget.exe" -TimeoutSec 10  -Verbose
 
@@ -36,11 +33,7 @@ jobs:
     - name: Install CRM Connector
       run: Install-Module -Name Microsoft.Xrm.Tooling.CrmConnector.PowerShell -RequiredVersion 3.3.0.964 -Force
 
-      # redirect isn't really an important value, this is a placehodler:
+      # redirect is a placehodler, trivial value
     - name: Connect to power platform
       run: |
         $ .\deployPackage.ps1 -url ${{vars.SERVER_URL}} -clientId ${{secrets.DV_CLIENT_ID}} -clientSecret ${{secrets.DV_CLIENT_SECRET}} -redirect "app://58145B91-0C36-4500-8554-080854F2AC97" -environment weu-dev-develop -version ${{ github.event.inputs.version }}
-
-    - name: Remove nuget
-      run: |
-        Remove-Item "$(Get-Location)\nuget.exe"
