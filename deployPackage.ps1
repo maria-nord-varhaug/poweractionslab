@@ -6,8 +6,7 @@ $crmConn = Get-CrmConnection -ConnectionString $connectionString
 if($crmConn.IsReady) {
   Write-Output "Connected successfully to Dataverse"
 
-  $startDir = Get-Location
-  # Import-CrmPackage -CrmConnection $CRMConn -PackageDirectory "$startDir\DealerUI installation v.$version\$environment\Tools" -PackageName Annata365Package.dll -UnpackFilesDirectory c:\UnpackedFiles -Verbose
+  # Import-CrmPackage -CrmConnection $CRMConn -PackageDirectory "(Get-Location)\DealerUI installation v.$version\$environment\Tools" -PackageName Annata365Package.dll -UnpackFilesDirectory c:\UnpackedFiles -Verbose
 } else {
   Write-Output "Failed to connect to Dataverse"
   Exit 1

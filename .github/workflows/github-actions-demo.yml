@@ -22,18 +22,52 @@ jobs:
     - name: Checkout repository 
       uses: actions/checkout@v4
 
+      env: 
+        ENVIRONMENT: weu-dev-develop
+        VERSION: ${{ github.event.inputs.version }}
+        SERVER_URL: ${{vars.SERVER_URL}}
+        CLIENT_ID: ${{secrets.DV_CLIENT_ID}}
+        CLIENT_SECRET: ${{secrets.DV_CLIENT_SECRET}}
+        REDIRECT: app://58145B91-0C36-4500-8554-080854F2AC97
+
     - name: Install nuget to runner
       run: |
         Invoke-WebRequest "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe" -OutFile "(Get-Location)\nuget.exe" -TimeoutSec 10  -Verbose
 
     - name: Install powerplatform package deployment tool and unzip annatas newest package to right folder
       run: |
-        & .\preparePackageDeploymentAndUnzipPackage.ps1 -environment weu-dev-develop -version ${{ github.event.inputs.version }}
+        $file = Get-ChildItem -Filter "Annata365Dataverse.$VERSION.pdpkg.zip" | Select-Object -First 1
+        if ($file)
+        {
+          $startDir = Get-Location
+          $workingDir = "$startDir\DealerUI installation v.$VERSION\$ENVIRONMENT"
+          
+          mkdir "$workingDir\Tools\PackageDeployment"
+          
+          & "$startDir\nuget.exe" install Microsoft.CrmSdk.XrmTooling.PackageDeployment.WPF -O "$workingDir\Tools"
+          
+          Move-Item "$workingDir\Tools\Microsoft.CrmSdk.XrmTooling.PackageDeployment.Wpf.*\tools\*.*" "$workingDir\Tools\PackageDeployment"
+          Remove-Item "$workingDir\Tools\Microsoft.CrmSdk.XrmTooling.PackageDeployment.Wpf.*" -Force -Recurse
+          Expand-Archive -Path "$file" -DestinationPath "$workingDir\Tools"
+        }
+        else {
+          exit 1
+        }
 
     - name: Install CRM Connector
       run: Install-Module -Name Microsoft.Xrm.Tooling.CrmConnector.PowerShell -RequiredVersion 3.3.0.964 -Force
 
       # redirect is a placehodler, trivial value
+      # line of code for later import, need to be tested Import-CrmPackage -CrmConnection $CRMConn -PackageDirectory "(Get-Location)\DealerUI installation v.$version\$environment\Tools" -PackageName Annata365Package.dll -UnpackFilesDirectory c:\UnpackedFiles -Verbose
+
     - name: Connect to power platform
       run: |
-        $ .\deployPackage.ps1 -url ${{vars.SERVER_URL}} -clientId ${{secrets.DV_CLIENT_ID}} -clientSecret ${{secrets.DV_CLIENT_SECRET}} -redirect "app://58145B91-0C36-4500-8554-080854F2AC97" -environment weu-dev-develop -version ${{ github.event.inputs.version }}
+        Import-Module Microsoft.Xrm.Tooling.CrmConnector.PowerShell     
+        $crmConn = Get-CrmConnection -ConnectionString "AuthType=ClientSecret;Url=$SERVER_URL;ClientId=$CLIENT_ID;ClientSecret=$CLIENT_SECRET;RedirectUri=$REDIRECT"    
+        if($crmConn.IsReady) {
+          Write-Output "Connected successfully to Dataverse"
+
+        } else {
+          Write-Output "Failed to connect to Dataverse"
+          Exit 1
+        }
