@@ -10,6 +10,13 @@ on:
         description: 'The environment to deploy to, e.g. weu-dev-develop'
         required: true
 
+env: 
+  ENVIRONMENT: weu-dev-develop
+  VERSION: ${{ github.event.inputs.version }}
+  SERVER_URL: ${{vars.SERVER_URL}}
+  CLIENT_ID: ${{secrets.DV_CLIENT_ID}}
+  CLIENT_SECRET: ${{secrets.DV_CLIENT_SECRET}}
+  REDIRECT: app://58145B91-0C36-4500-8554-080854F2AC97
   
 jobs:
   deploy:
@@ -21,14 +28,6 @@ jobs:
     steps:
     - name: Checkout repository 
       uses: actions/checkout@v4
-
-      env: 
-        ENVIRONMENT: weu-dev-develop
-        VERSION: ${{ github.event.inputs.version }}
-        SERVER_URL: ${{vars.SERVER_URL}}
-        CLIENT_ID: ${{secrets.DV_CLIENT_ID}}
-        CLIENT_SECRET: ${{secrets.DV_CLIENT_SECRET}}
-        REDIRECT: app://58145B91-0C36-4500-8554-080854F2AC97
 
     - name: Install nuget to runner
       run: |
