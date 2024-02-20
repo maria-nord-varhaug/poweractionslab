@@ -10,13 +10,7 @@ on:
         description: 'The environment to deploy to, e.g. weu-dev-develop'
         required: true
 
-env: 
-  ENVIRONMENT: weu-dev-develop
-  VERSION: ${{ github.event.inputs.version }}
-  SERVER_URL: ${{vars.SERVER_URL}}
-  CLIENT_ID: ${{secrets.DV_CLIENT_ID}}
-  CLIENT_SECRET: ${{secrets.DV_CLIENT_SECRET}}
-  REDIRECT: app://58145B91-0C36-4500-8554-080854F2AC97
+
   
 jobs:
   deploy:
@@ -24,6 +18,13 @@ jobs:
       run:
         shell: PowerShell # VERY important, this code does not work in powershell core
     runs-on: windows-latest
+    env: 
+      ENVIRONMENT: weu-dev-develop
+      VERSION: ${{ github.event.inputs.version }}
+      SERVER_URL: ${{vars.SERVER_URL}}
+      CLIENT_ID: ${{secrets.DV_CLIENT_ID}}
+      CLIENT_SECRET: ${{secrets.DV_CLIENT_SECRET}}
+      REDIRECT: app://58145B91-0C36-4500-8554-080854F2AC97
 
     steps:
     - name: Checkout repository 
@@ -57,7 +58,7 @@ jobs:
       run: Install-Module -Name Microsoft.Xrm.Tooling.CrmConnector.PowerShell -RequiredVersion 3.3.0.964 -Force
 
       # redirect is a placehodler, trivial value
-      # line of code for later import, need to be tested Import-CrmPackage -CrmConnection $CRMConn -PackageDirectory "(Get-Location)\DealerUI installation v.$version\$environment\Tools" -PackageName Annata365Package.dll -UnpackFilesDirectory c:\UnpackedFiles -Verbose
+      # line of code for later import, need to be tested Impdas ort-CrmPackage -CrmConnection $CRMConn -PackageDirectory "(Get-Location)\DealerUI installation v.$version\$environment\Tools" -PackageName Annata365Package.dll -UnpackFilesDirectory c:\UnpackedFiles -Verbose
 
     - name: Connect to power platform
       run: |
