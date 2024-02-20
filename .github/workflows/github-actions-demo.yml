@@ -36,11 +36,11 @@ jobs:
 
     - name: Install powerplatform package deployment tool and unzip annatas newest package to right folder
       run: |
-        $file = Get-ChildItem -Filter "Annata365Dataverse.$VERSION.pdpkg.zip" | Select-Object -First 1
+        $file = Get-ChildItem -Filter "Annata365Dataverse.${{ env.VERSION }}.pdpkg.zip" | Select-Object -First 1
         if ($file)
         {
           $startDir = Get-Location
-          $workingDir = "$startDir\DealerUI installation v.$VERSION\$ENVIRONMENT"
+          $workingDir = "$startDir\DealerUI installation v.${{ env.VERSION }}\${{ env.ENVIRONMENT }}"
           
           mkdir "$workingDir\Tools\PackageDeployment"
           
@@ -63,7 +63,7 @@ jobs:
     - name: Connect to power platform
       run: |
         Import-Module Microsoft.Xrm.Tooling.CrmConnector.PowerShell     
-        $crmConn = Get-CrmConnection -ConnectionString "AuthType=ClientSecret;Url=$SERVER_URL;ClientId=$CLIENT_ID;ClientSecret=$CLIENT_SECRET;RedirectUri=$REDIRECT"    
+        $crmConn = Get-CrmConnection -ConnectionString "AuthType=ClientSecret;Url=${{ env.SERVER_URL }};ClientId=${{ env.CLIENT_ID }};ClientSecret=${{ env.CLIENT_SECRET }};RedirectUri=${{ env.REDIRECT }}"    
         if($crmConn.IsReady) {
           Write-Output "Connected successfully to Dataverse"
 
